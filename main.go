@@ -69,5 +69,9 @@ func setupRouter() *gin.Engine {
 	// redis test
 	r.GET("/redis", controllers.TestRedis)
 
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
+
 	return r
 }
