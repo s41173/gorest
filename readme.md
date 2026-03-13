@@ -7,8 +7,9 @@ A lightweight **Go REST API** project built for demonstration purposes.
 ## 🚀 Features
 
 - RESTful API using **Go** and **GORM**
-- **MySQL (Aiven Cloud)** for persistent data
-- **Redis Cloud** for caching
+- **MySQL (Railway Cloud)** for persistent data
+- **Redis (Railway Cloud)** for caching
+- **JWT** for Token
 - Whatsapp Notification for OTP Request
 - Environment-based configuration via `.env`
 - Quick deployment to cloud (Railway demo)
