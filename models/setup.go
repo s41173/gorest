@@ -44,11 +44,11 @@ func ConnectDatabase() {
 	// buat DSN dari Railway environment variable
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?tls=custom&parseTime=true",
-		os.Getenv("MYSQL_USER"),     // Railway variable reference
-		os.Getenv("MYSQL_PASSWORD"), // Railway variable reference
-		os.Getenv("MYSQL_HOST"),     // Railway variable reference
-		os.Getenv("MYSQL_PORT"),     // Railway variable reference
-		os.Getenv("MYSQL_DATABASE"), // Railway variable reference
+		os.Getenv("MYSQLUSER"),     // sebelumnya DB_USER
+		os.Getenv("MYSQLPASSWORD"), // sebelumnya DB_PASS
+		os.Getenv("MYSQLHOST"),     // sebelumnya DB_HOST
+		os.Getenv("MYSQLPORT"),     // sebelumnya DB_PORT
+		os.Getenv("MYSQLDATABASE"), // sebelumnya DB_NAME
 	)
 
 	log.Println("Connecting to DB:", dsn)
