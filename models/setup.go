@@ -16,10 +16,10 @@ var DB *gorm.DB
 func ConnectDatabase() {
 
 	// debug env (hapus nanti kalau sudah jalan)
-	log.Println("DB_USER:", os.Getenv("DB_USER"))
-	log.Println("DB_HOST:", os.Getenv("DB_HOST"))
-	log.Println("DB_PORT:", os.Getenv("DB_PORT"))
-	log.Println("DB_NAME:", os.Getenv("DB_NAME"))
+	log.Println("MYSQL_USER:", os.Getenv("MYSQL_USER"))
+	log.Println("MYSQL_HOST:", os.Getenv("MYSQL_HOST"))
+	log.Println("MYSQL_PORT:", os.Getenv("MYSQL_PORT"))
+	log.Println("MYSQL_DATABASE:", os.Getenv("MYSQL_DATABASE"))
 
 	// TLS config untuk MySQL cloud
 	tlsConfig := &tls.Config{
