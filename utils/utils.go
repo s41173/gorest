@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"go-rest/config"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -45,22 +46,38 @@ type Claims struct {
 }
 
 // auth middleware
+
+func Token(c *gin.Context) string {
+
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.JSON(401, gin.H{"error": "Authorization header missing"})
+		return ""
+	}
+
+	// Pisahkan Bearer dan token
+	parts := strings.SplitN(authHeader, " ", 2)
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		c.JSON(401, gin.H{"error": "Invalid Authorization header format"})
+		return ""
+	}
+
+	tokenStr := parts[1]
+
+	// Bersihkan karakter yang tidak perlu
+	tokenStr = strings.Trim(tokenStr, `"`)
+	tokenStr = strings.TrimSpace(tokenStr)
+
+	return tokenStr
+}
+
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		tokenStr := c.GetHeader("X-Auth-Token")
-		if tokenStr == "" {
+		tokenStr := Token(c)
+		// Panggil fungsi otentikasi
+		if !Otentikasi(tokenStr) {
 			c.AbortWithStatusJSON(401, gin.H{
-				"error": "Token tidak ditemukan",
-			})
-			return
-		}
-
-		hasil := Otentikasi(tokenStr)
-		if hasil == false {
-			// c.JSON(401, gin.H{"error": "Token Mismatch"})
-			c.AbortWithStatusJSON(401, gin.H{
-				"error": "Token mismatch",
+				"error": "Token mismatchxx",
 			})
 			return
 		}
@@ -111,56 +128,6 @@ func Otentikasi(tokenString string) bool {
 	// return true
 	return true
 }
-
-// ini otentikasi yang pakai database
-
-// func Otentikasi(tokenString string) bool {
-// 	// Parse token dengan kunci rahasia
-// 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-// 			return nil, fmt.Errorf("metode penandatanganan tidak valid")
-// 		}
-// 		return jwtKey, nil
-// 	})
-// 	// Cek apakah parsing berhasil dan token valid
-// 	if err == nil && token.Valid == true {
-
-// 		// dapatkan userid dulu
-// 		claims, err := DecodeToken(tokenString)
-// 		fmt.Println("Userid : ", claims.UserID)
-// 		if err != nil {
-// 			return false
-// 		} else {
-
-// 			// cek redis session
-// 			key := fmt.Sprintf("session:%d", claims.UserID)
-
-// 			val, err := config.RDB.Get(config.Ctx, key).Result()
-// 			if err != nil {
-// 				// return nil, errors.New("session not found")
-// 				return false
-// 			}
-
-// 			if val != tokenString {
-// 				// return nil, errors.New("token mismatch")
-// 				return false
-// 			}
-
-// 			return true
-
-// 			// cek di database atau di model
-// 			// login := models.Login{}
-// 			// if login.CekUserToken(models.DB, claims.UserID, tokenString) == true {
-// 			// 	return true
-// 			// } else {
-// 			// 	return false
-// 			// }
-// 		}
-
-// 	} else {
-// 		return false
-// 	}
-// }
 
 // DecodeToken mendekode JWT token
 func DecodeToken(tokenStr string) (*Claims, error) {

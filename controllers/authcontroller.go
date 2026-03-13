@@ -15,6 +15,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/exp/rand"
 )
 
@@ -152,7 +153,7 @@ func ForgotPassword(c *gin.Context) {
 
 func Logout(c *gin.Context) {
 
-	tokenStr := c.GetHeader("X-Auth-Token")
+	tokenStr := utils.Token(c)
 	claims, err := utils.DecodeToken(tokenStr)
 	if err != nil {
 		c.JSON(401, gin.H{"error": err.Error()})
@@ -181,28 +182,36 @@ func Logout(c *gin.Context) {
 
 func Decode(c *gin.Context) {
 
-	tokenStr := c.GetHeader("X-Auth-Token")
-	// fmt.Println("Token :", tokenStr)
-
-	// hasil := utils.Otentikasi(tokenStr)
-	// if hasil == false {
-	// 	c.JSON(401, gin.H{"error": "Token Mismatch"})
-	// }
-	// // fmt.Println(hasil)
+	tokenStr := utils.Token(c)
 	claims, err := utils.DecodeToken(tokenStr)
 	if err != nil {
 		c.JSON(401, gin.H{"error": err.Error()})
 		return
 	}
-	// fmt.Println("Hasil decode : ", claims)
+
+	key := fmt.Sprintf("session:%d", claims.UserID)
+
+	val, err := config.RDB.Get(config.Ctx, key).Result()
+	if err == redis.Nil {
+		c.JSON(401, gin.H{"error": "session expired"})
+		return
+	}
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	var session map[string]interface{}
+
+	err = json.Unmarshal([]byte(val), &session)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "failed decode redis json"})
+		return
+	}
+
 	c.JSON(200, gin.H{
-		"user_id":      claims.UserID,
-		"code":         claims.Code,
-		"name":         claims.Name,
-		"email":        claims.Email,
-		"premium":      claims.Premium,
-		"chapter":      claims.Chapter,
-		"chapter_code": claims.Chapter_code,
+		"result": session,
 	})
 }
 
@@ -334,8 +343,10 @@ func Login(c *gin.Context) {
 				// c.JSON(http.StatusOK, gin.H{"message": "Log berhasil ditambahkan"})
 
 				// Mengirimkan token sebagai respon
-				// c.JSON(http.StatusOK, gin.H{"token": tokenString})
-				c.JSON(200, gin.H{"token": tokenString})
+				c.JSON(200, gin.H{
+					"token": tokenString,
+					"type":  "Bearer",
+				})
 
 				// c.JSON(http.StatusOK, gin.H{"message": "Login successful!"})
 			} else {

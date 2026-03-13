@@ -13,10 +13,10 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 	// debug env (hapus kalau sudah jalan)
-	log.Println("MYSQLUSER:", os.Getenv("MYSQLUSER"))
-	log.Println("MYSQLHOST:", os.Getenv("MYSQLHOST"))
-	log.Println("MYSQLPORT:", os.Getenv("MYSQLPORT"))
-	log.Println("MYSQLDATABASE:", os.Getenv("MYSQLDATABASE"))
+	// log.Println("MYSQLUSER:", os.Getenv("MYSQLUSER"))
+	// log.Println("MYSQLHOST:", os.Getenv("MYSQLHOST"))
+	// log.Println("MYSQLPORT:", os.Getenv("MYSQLPORT"))
+	// log.Println("MYSQLDATABASE:", os.Getenv("MYSQLDATABASE"))
 
 	// buat DSN dari environment variable
 	dsn := fmt.Sprintf(
@@ -28,7 +28,7 @@ func ConnectDatabase() {
 		os.Getenv("MYSQLDATABASE"),
 	)
 
-	log.Println("Connecting to DB:", dsn)
+	// log.Println("Connecting to DB:", dsn)
 
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
