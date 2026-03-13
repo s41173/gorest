@@ -1,12 +1,10 @@
 package models
 
 import (
-	"crypto/tls"
 	"fmt"
 	"log"
 	"os"
 
-	mysqlDriver "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -14,46 +12,24 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-
-	// debug env (hapus nanti kalau sudah jalan)
-	log.Println("MYSQL_USER:", os.Getenv("MYSQL_USER"))
-	log.Println("MYSQL_HOST:", os.Getenv("MYSQL_HOST"))
-	log.Println("MYSQL_PORT:", os.Getenv("MYSQL_PORT"))
-	log.Println("MYSQL_DATABASE:", os.Getenv("MYSQL_DATABASE"))
-
-	// TLS config untuk MySQL cloud
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: true,
-	}
-
-	err := mysqlDriver.RegisterTLSConfig("custom", tlsConfig)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// debug env (hapus kalau sudah jalan)
+	log.Println("MYSQLUSER:", os.Getenv("MYSQLUSER"))
+	log.Println("MYSQLHOST:", os.Getenv("MYSQLHOST"))
+	log.Println("MYSQLPORT:", os.Getenv("MYSQLPORT"))
+	log.Println("MYSQLDATABASE:", os.Getenv("MYSQLDATABASE"))
 
 	// buat DSN dari environment variable
-	// dsn := fmt.Sprintf(
-	// 	"%s:%s@tcp(%s:%s)/%s?tls=custom&parseTime=true",
-	// 	os.Getenv("DB_USER"),
-	// 	os.Getenv("DB_PASS"),
-	// 	os.Getenv("DB_HOST"),
-	// 	os.Getenv("DB_PORT"),
-	// 	os.Getenv("DB_NAME"),
-	// )
-
-	// buat DSN dari Railway environment variable
 	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?tls=custom&parseTime=true",
-		os.Getenv("MYSQLUSER"),     // sebelumnya DB_USER
-		os.Getenv("MYSQLPASSWORD"), // sebelumnya DB_PASS
-		os.Getenv("MYSQLHOST"),     // sebelumnya DB_HOST
-		os.Getenv("MYSQLPORT"),     // sebelumnya DB_PORT
-		os.Getenv("MYSQLDATABASE"), // sebelumnya DB_NAME
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		os.Getenv("MYSQLUSER"),
+		os.Getenv("MYSQLPASSWORD"),
+		os.Getenv("MYSQLHOST"),
+		os.Getenv("MYSQLPORT"),
+		os.Getenv("MYSQLDATABASE"),
 	)
 
 	log.Println("Connecting to DB:", dsn)
 
-	// koneksi database
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Panicf("Failed to connect database: %v", err)
