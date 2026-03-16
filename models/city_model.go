@@ -15,7 +15,7 @@ type City struct {
 func (City) GetAllCities(db *gorm.DB) ([]City, error) {
 	var cities []City
 
-	err := db.Find(&cities).Error
+	err := db.Order("nama ASC").Find(&cities).Error
 	if err != nil {
 		return nil, err
 	}

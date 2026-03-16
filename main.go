@@ -36,17 +36,22 @@ func setupRouter() *gin.Engine {
 
 	r := gin.Default()
 
+	r.Static("/uploads", "./uploads")
+
 	// kelompok middleware auth
 	auth := r.Group("/")
 	auth.Use(utils.AuthMiddleware())
 	auth.GET("/decode", controllers.Decode)
+	auth.PUT("/password", controllers.ChangePassword)
+	auth.PUT("/update", controllers.Update_user)
+	auth.POST("/image", controllers.Update_image)
 	auth.GET("/logout", controllers.Logout)
 
 	// product
 	r.GET("/api/products", controllers.Index_product)
 	r.GET("/api/product/:id", controllers.Show)
 	r.POST("/api/product", controllers.Create)
-	r.PUT("/api/product/:id", controllers.Update)
+	// r.PUT("/api/product/:id", controllers.Update_product)
 	r.DELETE("/api/product/:id", controllers.Delete)
 
 	// events
@@ -68,6 +73,7 @@ func setupRouter() *gin.Engine {
 
 	// redis test
 	r.GET("/redis", controllers.TestRedis)
+	r.GET("/city", controllers.Index_city)
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

@@ -175,7 +175,7 @@ func Logout(c *gin.Context) {
 	// redis end
 
 	c.JSON(200, gin.H{
-		"message": "logout success",
+		"result": "logout success",
 	})
 
 }
@@ -260,24 +260,10 @@ func Login(c *gin.Context) {
 				// add jwt
 				// Membuat token JWT
 				claims := struct {
-					UserID       int64  `json:"userid"`
-					Code         string `json:"code"`
-					Name         string `json:"name"`
-					Email        string `json:"username"`
-					Phone        string `json:"phone"`
-					Premium      int8   `json:"premium"`
-					Chapter      int    `json:"chapter"`
-					Chapter_code string `json:"chapter_code"`
+					UserID int64 `json:"userid"`
 					jwt.RegisteredClaims
 				}{
-					UserID:       res.ID,
-					Code:         res.QuinosID,
-					Name:         res.FirstName,
-					Email:        res.Email,
-					Phone:        res.Phone1,
-					Premium:      res.Premium,
-					Chapter:      res.ClubID,
-					Chapter_code: chaptercode,
+					UserID: res.ID,
 					RegisteredClaims: jwt.RegisteredClaims{
 						ExpiresAt: jwt.NewNumericDate(time.Now().Add(2 * time.Hour)), // Contoh: 2 jam dari sekarang
 					},
@@ -307,6 +293,7 @@ func Login(c *gin.Context) {
 					Name:        res.FirstName,
 					Phone:       res.Phone1,
 					Chapter:     res.ClubID,
+					Image:       utils.BaseURL(c) + "/uploads/" + res.Image,
 					ChapterCode: chaptercode,
 					Token:       tokenString,
 					Device:      device,
@@ -337,25 +324,15 @@ func Login(c *gin.Context) {
 
 				// end redis
 
-				// currentTime := time.Now() // Mendapatkan waktu saat ini
-				// fmt.Println("Waktu sekarang:", currentTime)
-
-				// c.JSON(http.StatusOK, gin.H{"message": "Log berhasil ditambahkan"})
-
 				// Mengirimkan token sebagai respon
 				c.JSON(200, gin.H{
 					"token": tokenString,
 					"type":  "Bearer",
 				})
-
-				// c.JSON(http.StatusOK, gin.H{"message": "Login successful!"})
 			} else {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Password"})
 			}
 		}
-		// fmt.Println("Data status : ", res.Status)
-
-		// Lanjutkan dengan logika berikutnya jika validUser atau validUserPhone bernilai true
 	}
 
 }

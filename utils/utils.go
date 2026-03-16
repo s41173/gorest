@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"go-rest/config"
+	"regexp"
 	"strings"
 	"time"
 
@@ -29,6 +30,7 @@ type CustomerSession struct {
 	ChapterCode string `json:"chapter_code"`
 	Token       string `json:"token"`
 	Device      string `json:"device"`
+	Image       string `json:"image"`
 	LoginAt     string `json:"login_at"`
 }
 
@@ -44,8 +46,6 @@ type Claims struct {
 	Chapter_code string `json:"chapter_code"`
 	jwt.StandardClaims
 }
-
-// auth middleware
 
 func Token(c *gin.Context) string {
 
@@ -71,13 +71,14 @@ func Token(c *gin.Context) string {
 	return tokenStr
 }
 
+// auth middleware
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenStr := Token(c)
 		// Panggil fungsi otentikasi
 		if !Otentikasi(tokenStr) {
 			c.AbortWithStatusJSON(401, gin.H{
-				"error": "Token mismatchxx",
+				"error": "Token mismatch",
 			})
 			return
 		}
@@ -146,11 +147,6 @@ func DecodeToken(tokenStr string) (*Claims, error) {
 		return nil, errors.New("invalid token")
 	}
 
-	// Cek apakah token sudah kedaluwarsa
-	// if claims.ExpiresAt < time.Now().Unix() {
-	// 	return nil, errors.New("token has expired")
-	// }
-
 	return claims, nil
 }
 
@@ -187,4 +183,27 @@ func VerifyPassword(password, hash string) bool {
 	// fmt.Println("Password input:", password)
 	// fmt.Println("Hash DB:", hash)
 	// return false
+}
+
+func SplitSpace(s string) string {
+
+	// lowercase
+	s = strings.ToLower(s)
+
+	// replace non alphanumeric dengan "-"
+	reg := regexp.MustCompile(`[^a-z0-9]+`)
+	s = reg.ReplaceAllString(s, "-")
+
+	// trim "-"
+	s = strings.Trim(s, "-")
+
+	return s
+}
+
+func BaseURL(c *gin.Context) string {
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	return scheme + "://" + c.Request.Host
 }
