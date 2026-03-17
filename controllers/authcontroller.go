@@ -42,7 +42,7 @@ func TestRedis(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"redis_value": val,
+		"redis_value adalah": val,
 	})
 }
 
