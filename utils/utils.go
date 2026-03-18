@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"go-rest/config"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -17,7 +18,7 @@ import (
 )
 
 // decode token
-var jwtKey = []byte("merciku")
+// var jwtKey = []byte("merciku")
 
 // Customer Session untuk redis
 type CustomerSession struct {
@@ -36,7 +37,7 @@ type CustomerSession struct {
 
 // Claims struct untuk memetakan data token
 type Claims struct {
-	UserID       int    `json:"userid"`
+	UserID       int64  `json:"user_id"`
 	Code         string `json:"code"`
 	Name         string `json:"name"`
 	Email        string `json:"username"`
@@ -95,7 +96,7 @@ func Otentikasi(tokenString string) bool {
 		return false
 	}
 
-	// fmt.Println("Userid:", claims.UserID)
+	// fmt.Println("Otentikasi->Userid:", claims.UserID)
 
 	key := fmt.Sprintf("session:%d", claims.UserID)
 
@@ -120,13 +121,12 @@ func Otentikasi(tokenString string) bool {
 	// fmt.Println("Redis token:", val)
 
 	if redisToken != tokenString {
-		fmt.Println("Token mismatch")
+		fmt.Println("Token mismatch dari otentikasi")
 		// fmt.Println("Token Redis : ", val)
 		// fmt.Println("Token Header : ", tokenString)
 		return false
 	}
 
-	// return true
 	return true
 }
 
@@ -134,15 +134,29 @@ func Otentikasi(tokenString string) bool {
 func DecodeToken(tokenStr string) (*Claims, error) {
 	claims := &Claims{}
 
-	// Parse token dengan secret key
+	secret := os.Getenv("JWT_SECRET")
+	// secret := "dodol"
+	if secret == "" {
+		return nil, errors.New("JWT_SECRET is empty")
+	}
+
+	// fmt.Println("Secret Key : ", secret)
+	// fmt.Println("Token : ", tokenStr)
+
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
+
+		// 🔒 Validasi algoritma (hindari attack)
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return []byte(secret), nil
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
-	// Validasi token
 	if !token.Valid {
 		return nil, errors.New("invalid token")
 	}
@@ -206,4 +220,18 @@ func BaseURL(c *gin.Context) string {
 		scheme = "https"
 	}
 	return scheme + "://" + c.Request.Host
+}
+
+type AppError struct {
+	Code    int
+	Message string
+}
+
+// Error implements error.
+func (a *AppError) Error() string {
+	panic("unimplemented")
+}
+
+func NewAppError(code int, message string) *AppError {
+	return &AppError{Code: code, Message: message}
 }

@@ -25,7 +25,7 @@ func (Login) TableName() string {
 func (login *Login) AddLog(db *gorm.DB, userID int, logData *string, device *string) error {
 	if login.CekUser(db, userID) {
 		// Jika user belum ada, lakukan insert
-		joinedTime := time.Now()
+		joinedTime := time.Now().UTC()
 		newLog := Login{
 			UserID: userID,
 			Log:    logData,
@@ -79,7 +79,7 @@ func (login *Login) EditLog(db *gorm.DB, userID int, logData string, device *str
 	updateData := map[string]interface{}{
 		"log":    logData,
 		"device": device,
-		"joined": time.Now(),
+		"joined": time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	// fmt.Println("Waktu : ", updateData)
@@ -91,7 +91,7 @@ func (login *Login) EditLog(db *gorm.DB, userID int, logData string, device *str
 	return nil
 }
 
-func (login *Login) LogoutUser(db *gorm.DB, userID int) error {
+func (login *Login) LogoutUser(db *gorm.DB, userID int64) error {
 	updateData := map[string]interface{}{
 		"log":       nil,
 		"device":    nil,

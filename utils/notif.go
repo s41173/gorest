@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"fmt"
+	"go-rest/config"
 	"go-rest/models"
 	"io/ioutil"
 	"net/http"
@@ -16,7 +17,7 @@ import (
 func sendRequest(param []byte) (interface{}, error) {
 	// Ambil data properti dari database
 	var property models.Property
-	data, err := property.GetProperty(models.DB)
+	data, err := property.GetProperty(config.DB)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get property data: %v", err)
 	}
@@ -109,7 +110,7 @@ func postNotif(typeVar, sentto, cust, custname, subject, content, modul string) 
 // Fungsi SendNotif
 func SendNotif(c *gin.Context, notifyType, custID, subject, content, module string) bool {
 	customer := models.Customer{}
-	if err := models.DB.First(&customer, custID).Error; err == nil {
+	if err := config.DB.First(&customer, custID).Error; err == nil {
 		var res, res1, res2 bool
 		switch notifyType {
 		case "0":

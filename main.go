@@ -3,7 +3,6 @@ package main
 import (
 	"go-rest/config"
 	"go-rest/controllers"
-	"go-rest/models"
 	"go-rest/utils"
 	"log"
 
@@ -20,7 +19,7 @@ func main() {
 	}
 
 	// koneksi database
-	models.ConnectDatabase()
+	config.ConnectDatabase()
 
 	// koneksi redis
 	config.InitRedis()
@@ -73,6 +72,7 @@ func setupRouter() *gin.Engine {
 
 	// redis test
 	r.GET("/redis", controllers.TestRedis)
+	r.GET("/cekredis", controllers.DebugSessions)
 	r.GET("/city", controllers.Index_city)
 
 	r.GET("/", func(c *gin.Context) {

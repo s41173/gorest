@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -13,10 +14,18 @@ var Ctx = context.Background()
 
 func InitRedis() {
 
+	if os.Getenv("REDISHOST") == "" {
+		log.Fatal("REDISHOST is empty")
+	}
+
 	RDB = redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDISHOST"),
-		Username: os.Getenv("REDISUSER"),
-		Password: os.Getenv("REDISPASS"),
+		Addr:         os.Getenv("REDISHOST"),
+		Username:     os.Getenv("REDISUSER"),
+		Password:     os.Getenv("REDISPASS"),
+		DB:           0,
+		DialTimeout:  5 * time.Second,
+		ReadTimeout:  3 * time.Second,
+		WriteTimeout: 3 * time.Second,
 	})
 
 	_, err := RDB.Ping(Ctx).Result()
