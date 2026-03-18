@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"go-rest/config"
@@ -91,4 +92,58 @@ func (s *AuthService) Login(username, password string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func (s *AuthService) Forgot(username, password string, otp int) (bool, error) {
+
+	customer := models.Customer{}
+	validUser := customer.CheckUser(config.DB, username)
+	validPhone := customer.CheckUserPhone(config.DB, username)
+
+	if !validUser && !validPhone {
+		return false, fmt.Errorf("User Not Found")
+	}
+
+	var res *models.Customer
+
+	if validUser == true {
+		res = customer.GetByUsername(config.DB, username)
+	} else if validPhone == true {
+		res = customer.GetByPhone(config.DB, username)
+	}
+
+	// cek apakah verified || status == 1
+	if res.Status == 0 {
+		return false, fmt.Errorf("User Not Active")
+	}
+	if res.Verified == 0 {
+		return false, fmt.Errorf("User Not Verified")
+	}
+	if utils.VerifyPassword(password, res.Password) == true {
+		return false, fmt.Errorf("Can't use previous password...!")
+	}
+
+	login := models.Login{}
+	reslogin := login.CekRegCount(config.DB, int(res.ID))
+
+	// fmt.Println("Res Login:", reslogin.Log)
+
+	if reslogin.Log == nil || *reslogin.Log != strconv.Itoa(otp) {
+		return false, fmt.Errorf("Invalid OTP.!")
+	}
+
+	// eksekusi set password
+	err := models.UpdatePassword(config.DB, int(res.ID), password)
+	if err != nil {
+		return false, fmt.Errorf("Failed to update password..!")
+	}
+
+	// clear log
+	device := ""
+	err = login.EditLog(config.DB, int(res.ID), device, &device)
+	if err != nil {
+		return false, fmt.Errorf("Failed to update log..!")
+	}
+
+	return true, nil
 }
