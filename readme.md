@@ -14,6 +14,7 @@ A lightweight **Go REST API** project built for demonstration purposes.
 - Environment-based configuration via `.env`
 - Quick deployment to cloud (Railway demo)
 - TLS connection to cloud database (demo-friendly)
+- Integration Testing Available
 
 ---
 
@@ -46,8 +47,14 @@ Go REST API (GORM)
 
 ## 📦 Collections / Endpoints
 
+### General
+| Method | Endpoint      | Description         |
+|--------|---------------|---------------------|
+| GET    | /             | Ping                |       
+| GET    | /city         | City List           |
+
 ### Auth
-| Method | Endpoint      | Description           |
+| Method | Endpoint      | Description         |
 |--------|---------------|---------------------|
 | POST   | /login        | Login               |       
 | GET    | /decode       | Decode Token        |
@@ -57,11 +64,11 @@ Go REST API (GORM)
 | POST   | /verify       | Verify User         |
 
 ### Product
-| Method | Endpoint      | Description           |
+| Method | Endpoint      | Description         |
 |--------|---------------|---------------------|
-| GET    | /product       | Get all products    |
-| GET    | /product/:id   | Get product by ID   |
-| POST   | /product       | Add new product     |
+| GET    | /product       | Get all products   |
+| GET    | /product/:id   | Get product by ID  |
+| POST   | /product       | Add new product    |
 
 ### Users (example)
 | Method | Endpoint   | Description          |
@@ -75,4 +82,12 @@ Go REST API (GORM)
 
 ## ⚙ Usage
 
-1. Create a `.env` file in project root with these variables:
+1. ping apps
+
+## Postman Collection
+Collection available on this repository.
+Url : https://gorest-production-0e3c.up.railway.app/
+Authentication : Bearer Token
+------------------------------
+Username : 082277014410
+Password : s3retgor3st

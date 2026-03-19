@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "9aee2890-7647-4876-aa2a-5fe485a1d76b",
+		"name": "Go-Rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1096731"
+	},
+	"item": [
+		{
+			"name": "GENERAL",
+			"item": [
+				{
+					"name": "Ping",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cloudserver}}",
+							"host": [
+								"{{cloudserver}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "city",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cloudserver}}city",
+							"host": [
+								"{{cloudserver}}city"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AUTH",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"082277014410\",\n    \"password\":\"j4ykiran\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cloudserver}}login",
+							"host": [
+								"{{cloudserver}}login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "decode",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenvalue}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{tokenvalue}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{cloudserver}}decode",
+							"host": [
+								"{{cloudserver}}decode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenvalue}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local80}}logout",
+							"host": [
+								"{{local80}}logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgot",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"082277014410\",\n    \"password\":\"j4ykiran\",\n    \"otp\": 3949\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local80}}forgot",
+							"host": [
+								"{{local80}}forgot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reqotp",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"082277014410\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local80}}otp",
+							"host": [
+								"{{local80}}otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifiy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "{{token}}",
+								"value": "{{tokenvalue}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\":\"082277014410\",\n    \"otp\":6831\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cloudserver}}verify",
+							"host": [
+								"{{cloudserver}}verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ping_redis",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cloudserver}}redis",
+							"host": [
+								"{{cloudserver}}redis"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cekredis",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cloudserver}}cekredis",
+							"host": [
+								"{{cloudserver}}cekredis"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "USER",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "cchapter",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "tname",
+									"value": "Leon S Kenedy 2",
+									"type": "text"
+								},
+								{
+									"key": "taddress",
+									"value": "Jalan Medan Belawan",
+									"type": "text"
+								},
+								{
+									"key": "tzip",
+									"value": "20123",
+									"type": "text"
+								},
+								{
+									"key": "tphone1",
+									"value": "082277014410",
+									"type": "text"
+								},
+								{
+									"key": "temail",
+									"value": "sanjaya.kiran@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "ccity",
+									"value": "Medan",
+									"type": "text"
+								},
+								{
+									"key": "tpassword",
+									"value": "j4ykiran",
+									"type": "text"
+								},
+								{
+									"key": "tdob",
+									"value": "1990-01-01",
+									"type": "text"
+								},
+								{
+									"key": "tnik",
+									"value": "12242431424",
+									"type": "text"
+								},
+								{
+									"key": "tcartype",
+									"value": "W202",
+									"type": "text"
+								},
+								{
+									"key": "tpoliceno",
+									"value": "B20EM",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{cloudserver}}register",
+							"host": [
+								"{{cloudserver}}register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change_password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenvalue}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"082277014410\",\n    \"new_password\": \"s3retgor3st\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cloudserver}}password",
+							"host": [
+								"{{cloudserver}}password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenvalue}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Mario Bergulung\",\n  \"address\": \"Jl Besitang\",\n  \"zip\": \"20111\",\n  \"city\": \"Binjai\",\n  \"cartype\": \"W202 C2890\",\n  \"vehicleno\": \"B 1299 AK\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local80}}update",
+							"host": [
+								"{{local80}}update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateImage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tokenvalue}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/jaykiran/Desktop/Gemini_Generated_Image_c3uv4hc3uv4hc3uv.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{cloudserver}}image",
+							"host": [
+								"{{cloudserver}}image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CHAPTER",
+			"item": [
+				{
+					"name": "chapter_list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cloudserver}}chapter",
+							"host": [
+								"{{cloudserver}}chapter"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PRODUCTS",
+			"item": [
+				{
+					"name": "localhost:8080/api/product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\" : \"3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{cloudserver}}api/product",
+							"host": [
+								"{{cloudserver}}api"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8080/api/product/3",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nama_product\" : \"Baju Kohana\",\n    \"deskripsi\" : \"Ya ini baju\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/product/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"product",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8080/api/product/",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nama_product\" : \"Baju Koh\",\n    \"deskripsi\" : \"Ya ini baju\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/product/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"product",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8080/api/product/1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/product/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8080/api/products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/products",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EVENT",
+			"item": [
+				{
+					"name": "localhost:8080/events",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\":\"\",\n    \"limit\":10,\n    \"offset\":0,\n    \"chapter\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/events",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "events detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{cloudserver}}events/5",
+							"host": [
+								"{{cloudserver}}events"
+							],
+							"path": [
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
