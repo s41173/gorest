@@ -27,18 +27,18 @@ Go REST API (GORM)
 │
 ▼
 ┌───────────────┐
-│ MySQL DB │ ← Aiven Cloud
+│ MySQL DB │ ← Railway Cloud
 └───────────────┘
 │
 ▼
 ┌───────────────┐
-│ Redis Cache │ ← Redis Cloud
+│ Redis Cache │ ← Railway Redis Cloud
 └───────────────┘
 
 
 - **Language:** Go  
 - **ORM:** GORM  
-- **Database:** MySQL (Aiven Cloud)  
+- **Database:** MySQL (Railway Cloud)  
 - **Cache:** Redis Cloud  
 - **Deployment:** Railway (or local)  
 - **Environment Variables:** `.env`  
