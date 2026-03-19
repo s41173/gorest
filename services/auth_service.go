@@ -11,6 +11,7 @@ import (
 	"go-rest/utils"
 
 	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/exp/rand"
 	"gorm.io/gorm"
 )
 
@@ -92,6 +93,44 @@ func (s *AuthService) Login(username, password string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+func (s *AuthService) Otp(username string) (int, int, error) { // return otp, userid, err
+
+	otp := 200
+	userid := 0
+	customer := models.Customer{}
+	validUser := customer.CheckUser(config.DB, username)
+	validPhone := customer.CheckUserPhone(config.DB, username)
+
+	if !validUser && !validPhone {
+		return 400, userid, fmt.Errorf("User Not Found")
+	}
+
+	var res *models.Customer
+
+	if validUser == true {
+		res = customer.GetByUsername(config.DB, username)
+	} else if validPhone == true {
+		res = customer.GetByPhone(config.DB, username)
+	}
+
+	userid = int(res.ID)
+	login := models.Login{}
+	// get reqcount
+	reslogin := login.CekRegCount(config.DB, userid)
+	if reslogin.ReqCount < 3 {
+		rand.Seed(uint64(time.Now().UnixNano()))
+		// Menghasilkan angka acak antara 1000 dan 9999
+		otp = rand.Intn(9000) + 1000
+		err := login.SetOTP(config.DB, userid, otp)
+		if err != nil {
+			return 500, userid, fmt.Errorf("Failed to set otp..!")
+		}
+	} else {
+		return 403, userid, fmt.Errorf("Maximum OTP Request..!")
+	}
+
+	return otp, userid, nil
 }
 
 func (s *AuthService) Forgot(username, password string, otp int) (bool, error) {

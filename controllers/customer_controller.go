@@ -11,6 +11,7 @@ import (
 
 	"go-rest/config"
 	"go-rest/models"
+	"go-rest/services"
 	"go-rest/utils"
 
 	// "go-rest/utils"
@@ -134,33 +135,12 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	customer := models.Customer{}
-	var res *models.Customer
-	validUser := customer.CheckUser(config.DB, requestData.Username)
-	validPhone := customer.CheckUserPhone(config.DB, requestData.Username)
-
-	if !validUser && !validPhone {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User Not Found..!"})
-		return
-	}
-
-	if validUser {
-		res = customer.GetByUsername(config.DB, requestData.Username)
-	} else if validPhone {
-		res = customer.GetByPhone(config.DB, requestData.Username)
-	}
-
-	if utils.VerifyPassword(requestData.NewPassword, res.Password) == true {
-		c.JSON(403, gin.H{"error": "Can't use previous password...!"})
-		return
-	}
-
-	err := models.UpdatePassword(config.DB, int(res.ID), requestData.NewPassword)
+	service := services.NewCustomerService()
+	status, err := service.ChangePassword(requestData.Username, requestData.NewPassword)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update password"})
+		c.JSON(status, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
 }
 

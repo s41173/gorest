@@ -46,7 +46,7 @@ func TestLoginScenarios(t *testing.T) {
 
 	// -------------------------------
 	// 1️⃣ Username salah → harus "user not found"
-	// fmt.Println("\n[TEST] Login with non-existent user")
+	fmt.Println("\n[TEST] Login with non-existent user")
 	_, err := service.Login(nonexistentUser, correctPassword)
 	if err == nil || err.Error() != "user not found" {
 		t.Errorf("Expected 'user not found', got: %v", err)
@@ -87,4 +87,45 @@ func TestLoginScenarios(t *testing.T) {
 	}
 
 	fmt.Println("JWT claims:", claims)
+}
+
+func TestOtpScenarios(t *testing.T) {
+	service := services.NewAuthService()
+
+	// 🔹 Ganti dengan user yang benar-benar ada di DB
+	username := "082277014410"
+
+	fmt.Println("\n[TEST] OTP with existent user")
+	otp, userid, err := service.Otp(username)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	fmt.Println("Otp : ", otp)
+	fmt.Println("Userid : ", userid)
+}
+
+func TestForgotPassScenarios(t *testing.T) {
+	service := services.NewAuthService()
+
+	// 🔹 Ganti dengan user yang benar-benar ada di DB
+	username := "082277014410"
+	password := "j4ykiran1"
+	otp := 5200
+
+	// -------------------------------
+	// 1️⃣ Username salah → harus "user not found"
+	fmt.Println("\n[TEST] Forgot pass with existent user")
+	res, err := service.Forgot(username, password, otp)
+
+	if err != nil {
+		t.Fatalf("Expected error for invalid OTP")
+	}
+
+	if res != true {
+		t.Errorf("Expected false")
+	}
+
+	fmt.Println("Berhasil")
 }

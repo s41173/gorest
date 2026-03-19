@@ -10,11 +10,8 @@ import (
 	"go-rest/services"
 	"go-rest/utils"
 
-	// "go-rest/utils"
-
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
-	"golang.org/x/exp/rand"
 )
 
 // var ctx = context.Background()
@@ -335,49 +332,25 @@ func RegOTP(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
-	// fmt.Println("Hasil request : ", requestData)
 
-	customer := models.Customer{}
-	validUser := customer.CheckUser(config.DB, requestData.Username)
-	validPhone := customer.CheckUserPhone(config.DB, requestData.Username)
-
-	if !validUser && !validPhone {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User Not Found..!"})
+	service := services.NewAuthService()
+	otp, userid, err := service.Otp(requestData.Username)
+	if err != nil {
+		c.JSON(otp, gin.H{"error": err.Error()})
 		return
-	} else {
-		var res *models.Customer
-
-		if validUser == true {
-			res = customer.GetByUsername(config.DB, requestData.Username)
-		} else if validPhone == true {
-			res = customer.GetByPhone(config.DB, requestData.Username)
-		}
-
-		login := models.Login{}
-		// get reqcount
-		reslogin := login.CekRegCount(config.DB, int(res.ID))
-		// fmt.Println("Log data : ", reslogin.ReqCount)
-		if reslogin.ReqCount < 3 {
-			rand.Seed(uint64(time.Now().UnixNano()))
-			// Menghasilkan angka acak antara 1000 dan 9999
-			logid := rand.Intn(9000) + 1000
-			err := login.SetOTP(config.DB, int(res.ID), logid)
-			if err == nil {
-				// kirim notif
-				userIDStr := strconv.Itoa(int(res.ID))
-				currentTime := time.Now().Format("2006-01-02 15:04:05")                                  // Format to desired layout
-				logMessage := "OTP Reg : " + currentTime + " Kode Pin OTP Anda : " + strconv.Itoa(logid) // Convert logid to string
-				// fmt.Println(logMessage)
-				notif := utils.SendNotif(c, "7", userIDStr, logMessage, logMessage, "login")
-				if notif == false {
-					c.JSON(403, gin.H{"error": "Failure to send otp..!"})
-				} else {
-					c.JSON(200, gin.H{"error": "OTP has been sent..!"})
-				}
-			}
-		} else {
-			c.JSON(403, gin.H{"error": "Maximum OTP Request..!"})
-		}
-
 	}
+
+	// kirim notif
+	userIDStr := strconv.Itoa(int(userid))
+	currentTime := time.Now().Format("2006-01-02 15:04:05")                                // Format to desired layout
+	logMessage := "OTP Reg : " + currentTime + " Kode Pin OTP Anda : " + strconv.Itoa(otp) // Convert logid to string
+	// // fmt.Println(logMessage)
+	notif := utils.SendNotif(c, "7", userIDStr, logMessage, logMessage, "login")
+	if notif == false {
+		c.JSON(403, gin.H{"error": "Failure to send otp..!"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "OTP has been sent..!",
+	})
 }
