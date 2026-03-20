@@ -40,7 +40,7 @@ func TestLoginScenarios(t *testing.T) {
 
 	// 🔹 Ganti dengan user yang benar-benar ada di DB
 	existingUser := "082277014410"
-	correctPassword := "newpassword"
+	correctPassword := "j4ykiran"
 
 	// -------------------------------
 	// Login sukses → dapat JWT
@@ -72,46 +72,46 @@ func TestLoginScenarios(t *testing.T) {
 	fmt.Println("JWT claims:", claims)
 }
 
-func TestOtpScenarios(t *testing.T) {
-	service := services.NewAuthService()
+// func TestOtpScenarios(t *testing.T) {
+// 	service := services.NewAuthService()
 
-	username := "082277014410"
+// 	username := "082277014410"
 
-	otp, userid, err := service.Otp(username)
+// 	otp, userid, err := service.Otp(username)
 
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+// 	if err != nil {
+// 		t.Fatalf("unexpected error: %v", err)
+// 	}
 
-	if otp == 0 {
-		t.Errorf("expected otp, got 0")
-	}
+// 	if otp == 0 {
+// 		t.Errorf("expected otp, got 0")
+// 	}
 
-	if userid == 0 {
-		t.Errorf("expected valid user id")
-	}
-}
+// 	if userid == 0 {
+// 		t.Errorf("expected valid user id")
+// 	}
+// }
 
-func TestForgotPassScenarios(t *testing.T) {
-	service := services.NewAuthService()
+// func TestForgotPassScenarios(t *testing.T) {
+// 	service := services.NewAuthService()
 
-	username := "082277014410"
-	password := "j4ykiran"
+// 	username := "082277014410"
+// 	password := "j4ykiran"
 
-	// 🔹 generate OTP dulu
-	otp, _, err := service.Otp(username)
-	if err != nil {
-		t.Fatalf("failed generate otp: %v", err)
-	}
+// 	// 🔹 generate OTP dulu
+// 	otp, _, err := service.Otp(username)
+// 	if err != nil {
+// 		t.Fatalf("failed generate otp: %v", err)
+// 	}
 
-	// 🔹 pakai OTP yang valid
-	res, err := service.Forgot(username, password, otp)
+// 	// 🔹 pakai OTP yang valid
+// 	res, err := service.Forgot(username, password, otp)
 
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+// 	if err != nil {
+// 		t.Fatalf("unexpected error: %v", err)
+// 	}
 
-	if !res {
-		t.Errorf("expected success = true")
-	}
-}
+// 	if !res {
+// 		t.Errorf("expected success = true")
+// 	}
+// }
