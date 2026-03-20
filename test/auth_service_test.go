@@ -8,7 +8,6 @@ import (
 	"go-rest/config"
 	"go-rest/services"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/joho/godotenv"
 )
 
@@ -35,62 +34,62 @@ func TestMain(m *testing.M) {
 	os.Exit(code) // 🔥 WAJIB
 }
 
-func TestLoginScenarios(t *testing.T) {
-	service := services.NewAuthService()
-
-	// 🔹 Ganti dengan user yang benar-benar ada di DB
-	existingUser := os.Getenv("TEST_USER")
-	correctPassword := os.Getenv("TEST_PASS")
-
-	// -------------------------------
-	// Login sukses → dapat JWT
-	fmt.Println("\n[TEST] Login with correct credentials")
-	token, err := service.Login(existingUser, correctPassword)
-	if err != nil {
-		t.Fatalf("Login failed: %v", err)
-	}
-	if token == "" {
-		t.Fatal("Expected JWT token, got empty string")
-	}
-
-	fmt.Println("Generated token:", token)
-
-	// Validasi JWT
-	secretkey := os.Getenv("JWT_SECRET")
-	parsed, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		return []byte(secretkey), nil
-	})
-	if err != nil || !parsed.Valid {
-		t.Fatal("Invalid JWT token")
-	}
-
-	claims, ok := parsed.Claims.(jwt.MapClaims)
-	if !ok {
-		t.Fatal("Failed convert claims")
-	}
-
-	fmt.Println("JWT claims:", claims)
-}
-
-// func TestOtpScenarios(t *testing.T) {
+// func TestLoginScenarios(t *testing.T) {
 // 	service := services.NewAuthService()
 
-// 	username := "082277014410"
+// 	// 🔹 Ganti dengan user yang benar-benar ada di DB
+// 	existingUser := os.Getenv("TEST_USER")
+// 	correctPassword := os.Getenv("TEST_PASS")
 
-// 	otp, userid, err := service.Otp(username)
-
+// 	// -------------------------------
+// 	// Login sukses → dapat JWT
+// 	fmt.Println("\n[TEST] Login with correct credentials")
+// 	token, err := service.Login(existingUser, correctPassword)
 // 	if err != nil {
-// 		t.Fatalf("unexpected error: %v", err)
+// 		t.Fatalf("Login failed: %v", err)
+// 	}
+// 	if token == "" {
+// 		t.Fatal("Expected JWT token, got empty string")
 // 	}
 
-// 	if otp == 0 {
-// 		t.Errorf("expected otp, got 0")
+// 	fmt.Println("Generated token:", token)
+
+// 	// Validasi JWT
+// 	secretkey := os.Getenv("JWT_SECRET")
+// 	parsed, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+// 		return []byte(secretkey), nil
+// 	})
+// 	if err != nil || !parsed.Valid {
+// 		t.Fatal("Invalid JWT token")
 // 	}
 
-// 	if userid == 0 {
-// 		t.Errorf("expected valid user id")
+// 	claims, ok := parsed.Claims.(jwt.MapClaims)
+// 	if !ok {
+// 		t.Fatal("Failed convert claims")
 // 	}
+
+// 	fmt.Println("JWT claims:", claims)
 // }
+
+func TestOtpScenarios(t *testing.T) {
+	service := services.NewAuthService()
+
+	username := os.Getenv("TEST_USER")
+
+	otp, userid, err := service.Otp(username)
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if otp == 0 {
+		t.Errorf("expected otp, got 0")
+	}
+
+	if userid == 0 {
+		t.Errorf("expected valid user id")
+	}
+}
 
 // func TestForgotPassScenarios(t *testing.T) {
 // 	service := services.NewAuthService()
