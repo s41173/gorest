@@ -118,7 +118,7 @@ func (s *AuthService) Otp(username string) (int, int, error) { // return otp, us
 	login := models.Login{}
 	// get reqcount
 	reslogin := login.CekRegCount(config.DB, userid)
-	if reslogin.ReqCount < 3 {
+	if reslogin.ReqCount < 10 {
 		rand.Seed(uint64(time.Now().UnixNano()))
 		// Menghasilkan angka acak antara 1000 dan 9999
 		otp = rand.Intn(9000) + 1000

@@ -82,5 +82,12 @@ func setupRouter() *gin.Engine {
 		})
 	})
 
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"service": "GO REST API",
+			"status":  "running",
+		})
+	})
+
 	return r
 }
