@@ -39,8 +39,8 @@ func TestLoginScenarios(t *testing.T) {
 	service := services.NewAuthService()
 
 	// 🔹 Ganti dengan user yang benar-benar ada di DB
-	existingUser := "082277014410"
-	correctPassword := "j4ykiran"
+	existingUser := os.Getenv("TEST_USER")
+	correctPassword := os.Getenv("TEST_PASS")
 
 	// -------------------------------
 	// Login sukses → dapat JWT

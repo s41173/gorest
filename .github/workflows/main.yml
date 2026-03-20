@@ -30,5 +30,7 @@ jobs:
           REDISPASS: ${{ secrets.REDISPASS }}
 
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          TEST_USER: ${{ secrets.TEST_USER }}
+          TEST_PASS: ${{ secrets.TEST_PASS }}
 
         run: go test -v ./... -count=1
